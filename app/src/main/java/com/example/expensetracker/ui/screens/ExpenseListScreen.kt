@@ -90,6 +90,11 @@ fun ExpenseListScreen(
         transactions.map { it.category }.distinct().sorted()
     }
 
+    // Get all available categories (including those without transactions)
+    val allCategories = remember(categories) {
+        categories.sorted()
+    }
+
     // Calculate category totals
     val categoryTotals = remember(transactions) {
         transactions.groupBy { it.category }
@@ -160,8 +165,7 @@ fun ExpenseListScreen(
                         CategoryFilterButton(
                             category = category,
                             isSelected = selectedCategory == category,
-                            onClick = { selectedCategory = category },
-                            onLongClick = { onRemoveCategory(category) }
+                            onClick = { selectedCategory = category }
                         )
                     }
                 }
