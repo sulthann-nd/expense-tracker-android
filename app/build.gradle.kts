@@ -46,6 +46,7 @@ dependencies {
 
     // Coroutines + Flow support (VERY IMPORTANT)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.material3.android)
 
     // Use ONLY this for Kotlin (KSP)
     ksp(libs.androidx.room.compiler)

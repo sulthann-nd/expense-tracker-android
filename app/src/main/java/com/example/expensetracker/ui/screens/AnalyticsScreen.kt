@@ -16,7 +16,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -107,9 +107,9 @@ fun AnalyticsScreen(viewModel: AnalyticsViewModel) {
         // Summary Card
         AnalyticsCard {
             SummaryRow("Top Category", topCategory)
-            Divider(Modifier.padding(vertical = 8.dp), thickness = 0.5.dp)
+            HorizontalDivider(Modifier.padding(vertical = 8.dp), thickness = 0.5.dp)
             SummaryRow("Average Daily Spend", "$${String.format(Locale.getDefault(), "%.2f", avgSpend)}")
-            Divider(Modifier.padding(vertical = 8.dp), thickness = 0.5.dp)
+            HorizontalDivider(Modifier.padding(vertical = 8.dp), thickness = 0.5.dp)
             SummaryRow("Total This Month", "$${String.format(Locale.getDefault(), "%.2f", totalAmount)}", highlight = true)
         }
     }

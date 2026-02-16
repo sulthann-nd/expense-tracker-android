@@ -15,7 +15,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -83,7 +83,7 @@ fun EditExpenseScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column {
-                    Divider(thickness = 0.5.dp, color = Color.Gray.copy(alpha = 0.3f))
+                    HorizontalDivider(thickness = 0.5.dp, color = Color.Gray.copy(alpha = 0.3f))
                     Row(
                         modifier = Modifier
                             .background(Color(0xFFF2F2F7)) // systemGray6 equivalent
@@ -132,7 +132,7 @@ fun EditExpenseScreen(
                 .background(Color.White)
         ) {
             // Top Gray Line
-            Divider(thickness = 1.dp, color = Color.Gray.copy(alpha = 0.6f))
+            HorizontalDivider(thickness = 1.dp, color = Color.Gray.copy(alpha = 0.6f))
 
             Column(
                 modifier = Modifier
@@ -199,5 +199,5 @@ fun EditExpenseScreen(
 
 @Composable
 fun CustomDivider() {
-    Divider(color = Color.Gray.copy(alpha = 0.2f), thickness = 1.dp)
+    HorizontalDivider(color = Color.Gray.copy(alpha = 0.2f), thickness = 1.dp)
 }
