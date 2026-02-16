@@ -105,12 +105,32 @@ class AnalyticsViewModel(private val repository: TransactionRepository) : ViewMo
         return series
     }
 
-    private fun getCategoryColor(category: String): Color = when (category) {
-        "Shopping" -> Color(0xFF4CAF50)
-        "Food" -> Color(0xFFFF9800)
-        "Transport" -> Color(0xFF2196F3)
-        "Entertainment" -> Color(0xFFF44336)
-        "Bills" -> Color(0xFF9C27B0)
-        else -> Color.Gray
+    private fun getCategoryColor(category: String): Color {
+        val colors = listOf(
+            Color(0xFF4CAF50), // Green
+            Color(0xFFFF9800), // Orange
+            Color(0xFF2196F3), // Blue
+            Color(0xFFF44336), // Red
+            Color(0xFF9C27B0), // Purple
+            Color(0xFF00BCD4), // Cyan
+            Color(0xFFFFEB3B), // Yellow
+            Color(0xFF795548), // Brown
+            Color(0xFF607D8B), // Blue Grey
+            Color(0xFFE91E63), // Pink
+        )
+
+        // For standard categories, use fixed colors
+        return when (category) {
+            "Shopping" -> colors[0]
+            "Food" -> colors[1]
+            "Transport" -> colors[2]
+            "Entertainment" -> colors[3]
+            "Bills" -> colors[4]
+            else -> {
+                // For custom categories, use hash to select color
+                val index = category.hashCode().mod(colors.size)
+                colors[index]
+            }
+        }
     }
 }
