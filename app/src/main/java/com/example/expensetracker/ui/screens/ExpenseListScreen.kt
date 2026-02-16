@@ -1,5 +1,6 @@
 package com.example.expensetracker.ui.screens
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -54,7 +55,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ExpenseListScreen(
     viewModel: TransactionViewModel,
@@ -262,6 +263,7 @@ enum class SortOption(val displayName: String) {
     AMOUNT_ASC("Lowest Amount")
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CategoryFilterButton(
     category: String?,

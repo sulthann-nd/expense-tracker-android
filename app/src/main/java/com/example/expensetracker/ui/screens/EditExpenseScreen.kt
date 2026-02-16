@@ -32,11 +32,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.expensetracker.AmountField
-import com.example.expensetracker.CategoryPicker
-import com.example.expensetracker.DateRow
-import com.example.expensetracker.NoteRow
-import com.example.expensetracker.PaymentMethodPicker
+import com.example.expensetracker.ui.components.AmountField
+import com.example.expensetracker.ui.components.CategoryPicker
+import com.example.expensetracker.ui.components.DatePickerRow
+import com.example.expensetracker.ui.components.NoteField
+import com.example.expensetracker.ui.components.PaymentMethodPicker
 import com.example.expensetracker.ui.viewmodel.EditTransactionViewModel
 import java.util.Date
 import java.util.UUID
@@ -153,7 +153,7 @@ fun EditExpenseScreen(
                 CustomDivider()
 
                 // Date Row
-                DateRow(
+                DatePickerRow(
                     date = date,
                     onDateChange = { date = it },
                     label = "Date"
@@ -168,7 +168,7 @@ fun EditExpenseScreen(
                 CustomDivider()
 
                 // Note Row
-                NoteRow(
+                NoteField(
                     note = note,
                     onNoteChange = { note = it }
                 )
