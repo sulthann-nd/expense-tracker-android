@@ -3,6 +3,7 @@ package com.example.expensetracker.ui.screens
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -83,25 +84,41 @@ fun AnalyticsScreen(viewModel: AnalyticsViewModel) {
             )
         }
 
-        // Spending by Category Card
-        AnalyticsCard {
-            Text("Spending by Category", style = MaterialTheme.typography.titleMedium)
-            Spacer(Modifier.height(16.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                DonutChart(slices = componentSlices, modifier = Modifier.size(140.dp))
-                Column(Modifier.padding(start = 16.dp)) {
-                    componentSlices.forEach { slice ->
-                        LegendRow(slice)
+        if (transactions.isEmpty()) {
+            // No data present
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "No data is present",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        } else {
+            // Spending by Category Card
+            AnalyticsCard {
+                Text("Spending by Category", style = MaterialTheme.typography.titleMedium)
+                Spacer(Modifier.height(16.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    DonutChart(slices = componentSlices, modifier = Modifier.size(140.dp))
+                    Column(Modifier.padding(start = 16.dp)) {
+                        componentSlices.forEach { slice ->
+                            LegendRow(slice)
+                        }
                     }
                 }
             }
-        }
 
-        // Daily Spending Card
-        AnalyticsCard {
-            Text("Daily Spending (Last 7 days)", style = MaterialTheme.typography.titleMedium)
-            Spacer(Modifier.height(12.dp))
-            DailyLineChart(values = dailySeries, modifier = Modifier.height(120.dp).fillMaxWidth())
+            // Daily Spending Card
+            AnalyticsCard {
+                Text("Daily Spending (Last 7 days)", style = MaterialTheme.typography.titleMedium)
+                Spacer(Modifier.height(12.dp))
+                DailyLineChart(values = dailySeries, modifier = Modifier.height(120.dp).fillMaxWidth())
+            }
         }
 
         // Summary Card
