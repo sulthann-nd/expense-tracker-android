@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.PieChart
+import androidx.compose.material.icons.filled.ShoppingCart
 
 data class BottomNavItem(
     val label: String,
@@ -18,9 +18,10 @@ data class BottomNavItem(
 )
 
 val bottomNavItems = listOf(
-    BottomNavItem("Dashboard", Icons.Default.Home, "dashboard"),
-    BottomNavItem("List", Icons.Default.List, "list"),
-    BottomNavItem("Analytics", Icons.Default.PieChart, "analytics")
+    BottomNavItem("Dashboard", Icons.Filled.Home, "dashboard"),
+    BottomNavItem("List", Icons.Filled.List, "list"),
+    BottomNavItem("Analytics", Icons.Filled.ShoppingCart, "analytics"),
+    BottomNavItem("Exchange", Icons.Filled.Home, "exchange")
 )
 
 @Composable

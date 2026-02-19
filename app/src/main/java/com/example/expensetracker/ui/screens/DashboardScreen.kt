@@ -17,7 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -65,8 +65,7 @@ fun DashboardScreen(
                 title = { Text("Overview", fontWeight = FontWeight.Bold) },
                 actions = {
                     IconButton(onClick = onNavigateToAnalytics) {
-                        // Using Analytics icon as a standard alternative to PieChart
-                        Icon(Icons.Default.Analytics, contentDescription = "Analytics")
+                        Icon(Icons.Filled.ShoppingCart, contentDescription = "Analytics")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -182,7 +181,7 @@ fun StatCard(title: String, amount: Double, modifier: Modifier = Modifier) {
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "$${String.format("%.2f", amount)}",
+                text = "₹${String.format("%.2f", amount)}",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
@@ -251,7 +250,7 @@ fun ExpenseListItem(expense: TransactionEntity) {
         // Amount & Date
         Column(horizontalAlignment = Alignment.End) {
             Text(
-                text = "$${String.format("%.2f", expense.amount)}",
+                text = "₹${String.format("%.2f", expense.amount)}",
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )

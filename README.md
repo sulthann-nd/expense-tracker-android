@@ -42,6 +42,14 @@ A modern, feature-rich Android expense tracking application built with Jetpack C
 - ✅ **Date Picker** - Intuitive date selection for transactions
 - ✅ **Amount Input** - Decimal input with proper formatting
 
+### **Exchange Rate Tools** 🌍💱
+- 💱 **Currency Converter** - Real-time currency conversion with dropdown selection
+- 📊 **Latest Exchange Rates** - Current rates for all currencies (EUR base)
+- 📈 **Historical Rates** - Exchange rates for specific dates with filtering
+- 🏷️ **Currency Symbols** - Complete list of currency codes and names
+- 📅 **Date Picker Integration** - Calendar-based date selection for historical data
+- 🔄 **Real-time API** - Live data from ExchangeRate-API (free tier)
+
 ### **Analytics & Visualization**
 - 📊 **Expense Analytics** - Comprehensive spending analysis
 - 🥧 **Donut Charts** - Category-wise expense distribution
@@ -77,6 +85,7 @@ The app follows **MVVM (Model-View-ViewModel)** architecture with clean separati
 │   │   ├── 🏠 DashboardScreen.kt      # Home dashboard
 │   │   ├── 📋 ExpenseListScreen.kt    # Expense list with filtering
 │   │   ├── 📈 AnalyticsScreen.kt      # Charts & analytics
+│   │   ├── 💱 ExchangeRateScreen.kt   # Exchange rate tools
 │   │   ├── ✏️ EditExpenseScreen.kt     # Edit transactions
 │   │   ├── ➕ AddExpenseScreen.kt      # Add new expenses
 │   │   └── 🎓 onboarding/             # Onboarding flow
@@ -93,18 +102,26 @@ The app follows **MVVM (Model-View-ViewModel)** architecture with clean separati
 │   └── 🧠 viewmodel/                  # Specialized ViewModels
 │       ├── DashboardViewModel.kt      # Dashboard logic
 │       ├── AnalyticsViewModel.kt      # Analytics calculations
-│       └── EditTransactionViewModel.kt # Edit operations
+│       ├── EditTransactionViewModel.kt # Edit operations
+│       └── 💱 ExchangeRateViewModel.kt # Exchange rate operations
 │
-└── 💾 data/local/                     # Data layer
-    ├── 🗄️ database/                   # Room database setup
-    │   ├── AppDatabase.kt             # Database configuration
-    │   └── Converters.kt              # Type converters
-    ├── 📋 dao/                        # Data Access Objects
-    │   └── TransactionDao.kt          # Transaction CRUD operations
-    ├── 🏷️ entity/                     # Database entities
-    │   └── TransactionEntity.kt       # Transaction data model
-    └── 📚 repository/                 # Repository pattern
-        └── TransactionRepository.kt   # Data access abstraction
+├── 🌐 data/
+│   ├── 💾 local/                      # Local data layer
+│   │   ├── 🗄️ database/               # Room database setup
+│   │   ├── 📋 dao/                    # Data Access Objects
+│   │   └── 📚 repository/             # Repository pattern
+│   │
+│   └── 🌍 remote/                     # Remote data layer
+│       ├── 🔗 api/                    # API interfaces
+│       │   └── 💱 ExchangeRateApi.kt  # ExchangeRate-API client
+│       ├── 📦 model/                  # API data models
+│       │   ├── ExchangeRateResponse.kt
+│       │   └── SymbolsResponse.kt
+│       └── 📚 repository/             # Remote repository
+│           └── ExchangeRateRepository.kt
+│
+└── ⚙️ res/xml/                        # Resources
+    └── 🔒 network_security_config.xml # Network security configuration
 ```
 
 ### **Architecture Diagram**
@@ -188,6 +205,14 @@ graph TD
     class K,L,M,N,O viewmodel
     class P,Q,R,S,T data
 ```
+
+### 🔗 API Integration
+
+**ExchangeRate-API (Free Tier)**
+- **Base URL**: `http://api.exchangeratesapi.io/v1/`
+- **Features**: Latest rates, currency symbols, conversion, historical rates
+- **Limitations**: EUR base only, HTTP protocol, no paid features
+- **Network Config**: Cleartext traffic enabled for HTTP API calls
 
 ## � Key Decisions
 
@@ -278,6 +303,29 @@ cd expense-tracker
 - **Line Chart**: Daily spending trends
 - **Monthly Selector**: Switch between different months
 
+### **Exchange Rate Tools** 🌍💱
+
+#### **Currency Converter**
+- **Navigate to Exchange Rate** tab
+- **Select currencies**: Choose "From" and "To" currencies from dropdown menus
+- **Enter amount**: Input the amount to convert
+- **Convert**: Get real-time conversion rates
+
+#### **Latest Exchange Rates**
+- **View current rates**: All currencies relative to EUR base
+- **Filter currencies**: Use dropdown to search specific currencies
+- **Real-time data**: Fetched from ExchangeRate-API
+
+#### **Historical Rates**
+- **Select date**: Use calendar picker to choose historical date
+- **Filter currencies**: Choose specific currency from dropdown
+- **View past rates**: Exchange rates for the selected date
+
+#### **Currency Symbols**
+- **Browse all currencies**: Complete list of currency codes and names
+- **Search functionality**: Filter currencies by code or name
+- **Reference guide**: Useful for currency selection
+
 ### **Editing Expenses**
 - **Tap any expense** in the list to edit
 - **Modify details** and save changes
@@ -320,6 +368,12 @@ androidx-datastore-preferences = "1.1.1"
 
 // Navigation
 androidx-navigation-compose = "2.8.0"
+
+// Networking (Exchange Rate API)
+retrofit = "2.9.0"
+converter-gson = "2.9.0"
+okhttp3-logging = "4.12.0"
+gson = "2.10.1"
 ```
 
 ## 🧪 Testing

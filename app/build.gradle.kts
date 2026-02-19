@@ -64,8 +64,11 @@ dependencies {
     // Material Icons Core
     implementation(libs.androidx.compose.material.icons.core)
 
-    //for piechart
-    implementation(libs.androidx.material.icons.extended) // Check for latest version
+    // Networking
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

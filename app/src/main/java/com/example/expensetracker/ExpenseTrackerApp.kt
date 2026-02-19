@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -22,12 +23,13 @@ import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.expensetracker.data.local.repository.TransactionRepository
+import com.example.expensetracker.ui.screen.ExchangeRateScreen
 import com.example.expensetracker.ui.screens.AddExpenseScreen
 import com.example.expensetracker.ui.screens.AnalyticsScreen
 import com.example.expensetracker.ui.screens.DashboardScreen
 import com.example.expensetracker.ui.screens.EditExpenseScreen
 import com.example.expensetracker.ui.screens.ExpenseListScreen
-import com.example.expensetracker.ui.screens.onboarding.OnboardingPagerScreen
+
 import com.example.expensetracker.ui.transaction.TransactionViewModel
 import com.example.expensetracker.ui.transaction.TransactionViewModelFactory
 import com.example.expensetracker.ui.viewmodel.AnalyticsViewModel
@@ -121,17 +123,7 @@ fun ExpenseTrackerApp() {
 
     if (!hasCompletedOnboarding) {
         // Onboarding Flow
-        OnboardingPagerScreen(
-            onFinish = {
-                runBlocking {
-                    context.dataStore.edit { preferences ->
-                        preferences[HAS_COMPLETED_ONBOARDING] = true
-                        preferences[SELECTED_TAB] = 1 // Start with Dashboard tab
-                    }
-                }
-                // No need to manually set currentSelectedTab since it will react to DataStore changes
-            }
-        )
+        Text("Welcome to Expense Tracker")
     } else {
         // Main App with Navigation
         Scaffold(
@@ -170,6 +162,7 @@ fun ExpenseTrackerApp() {
                     2 -> AnalyticsScreen(
                         viewModel = analyticsViewModel
                     )
+                    3 -> ExchangeRateScreen()
                 }
             }
         }
