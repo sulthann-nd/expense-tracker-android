@@ -10,6 +10,7 @@ data class TransactionEntity(
     @PrimaryKey
     val id: UUID = UUID.randomUUID(),
     val amount: Double,
+    val currency: String = "INR", // Default to INR
     val category: String,
     val date: Date,
     val note: String? = null,

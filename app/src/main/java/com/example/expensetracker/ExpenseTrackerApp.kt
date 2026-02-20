@@ -35,6 +35,7 @@ import com.example.expensetracker.ui.transaction.TransactionViewModelFactory
 import com.example.expensetracker.ui.viewmodel.AnalyticsViewModel
 import com.example.expensetracker.ui.viewmodel.DashboardViewModel
 import com.example.expensetracker.ui.viewmodel.EditTransactionViewModel
+import com.example.expensetracker.ui.viewmodel.ExchangeRateViewModel
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import java.util.UUID
@@ -117,8 +118,9 @@ fun ExpenseTrackerApp() {
     val transactionViewModel: TransactionViewModel = viewModel(
         factory = TransactionViewModelFactory(repository)
     )
-    val dashboardViewModel: DashboardViewModel = viewModel { DashboardViewModel(repository) }
-    val analyticsViewModel: AnalyticsViewModel = viewModel { AnalyticsViewModel(repository) }
+    val exchangeRateViewModel: ExchangeRateViewModel = viewModel { ExchangeRateViewModel() }
+    val dashboardViewModel: DashboardViewModel = viewModel { DashboardViewModel(repository, exchangeRateViewModel) }
+    val analyticsViewModel: AnalyticsViewModel = viewModel { AnalyticsViewModel(repository, exchangeRateViewModel) }
     val editViewModel: EditTransactionViewModel = viewModel { EditTransactionViewModel(repository) }
 
     if (!hasCompletedOnboarding) {
@@ -180,6 +182,7 @@ fun ExpenseTrackerApp() {
         EditExpenseScreen(
             transactionId = UUID.fromString(editingExpenseId),
             viewModel = editViewModel,
+            exchangeRateViewModel = exchangeRateViewModel,
             onDismiss = { editingExpenseId = null }
         )
     }

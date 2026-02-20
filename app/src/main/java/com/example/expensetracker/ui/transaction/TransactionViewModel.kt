@@ -43,6 +43,7 @@ class TransactionViewModel(
     // 🔹 Add new transaction
     fun addTransaction(
         amount: Double,
+        currency: String = "INR",
         category: String,
         date: Date,
         paymentMethod: String,
@@ -51,6 +52,7 @@ class TransactionViewModel(
         val transaction = TransactionEntity(
             id = UUID.randomUUID(),
             amount = amount,
+            currency = currency,
             category = category,
             date = date,
             paymentMethod = paymentMethod,
@@ -66,6 +68,7 @@ class TransactionViewModel(
     fun updateTransaction(
         id: UUID,
         amount: Double,
+        currency: String = "INR",
         category: String,
         date: Date,
         paymentMethod: String,
@@ -74,6 +77,7 @@ class TransactionViewModel(
         val updated = TransactionEntity(
             id = id,
             amount = amount,
+            currency = currency,
             category = category,
             date = date,
             paymentMethod = paymentMethod,

@@ -12,6 +12,7 @@ import androidx.compose.ui.text.input.KeyboardType
 fun AmountField(
     amount: Double,
     onAmountChange: (Double) -> Unit,
+    currency: String = "INR",
     maxAmount: Double = 1e9
 ) {
     OutlinedTextField(
@@ -21,7 +22,7 @@ fun AmountField(
             if (parsed <= maxAmount) onAmountChange(parsed)
         },
         label = { Text("Amount") },
-        prefix = { Text("₹") },
+        prefix = { Text("$currency ") },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
         modifier = Modifier.fillMaxWidth()
     )

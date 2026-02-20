@@ -50,7 +50,7 @@ fun FinancialGoalsPage(onNext: () -> Unit) {
         Spacer(Modifier.weight(1f))
         Text("Monthly Spending Limit", color = Color.White.copy(0.9f))
         Slider(value = limit, onValueChange = { limit = it }, valueRange = 0f..5000f, colors = SliderDefaults.colors(thumbColor = Color.Yellow))
-        Text("₹${limit.toInt()}", color = Color.White, fontSize = 36.sp, fontWeight = FontWeight.Bold)
+        Text("INR ${limit.toInt()}", color = Color.White, fontSize = 36.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.height(60.dp))
         OrangeButton("Continue", onClick = onNext)
     }

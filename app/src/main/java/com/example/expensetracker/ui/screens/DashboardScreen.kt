@@ -92,11 +92,13 @@ fun DashboardScreen(
                 StatCard(
                     title = "Today's Spending",
                     amount = todayAmount,
+                    currency = "INR",
                     modifier = Modifier.weight(1f)
                 )
                 StatCard(
                     title = "This Month",
                     amount = monthAmount,
+                    currency = "INR",
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -167,7 +169,7 @@ fun DashboardHeader() {
 }
 
 @Composable
-fun StatCard(title: String, amount: Double, modifier: Modifier = Modifier) {
+fun StatCard(title: String, amount: Double, currency: String = "INR", modifier: Modifier = Modifier) {
     ElevatedCard(
         modifier = modifier,
         shape = RoundedCornerShape(20.dp),
@@ -181,7 +183,7 @@ fun StatCard(title: String, amount: Double, modifier: Modifier = Modifier) {
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = "₹${String.format("%.2f", amount)}",
+                text = "${currency} ${String.format("%.2f", amount)}",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
@@ -250,7 +252,7 @@ fun ExpenseListItem(expense: TransactionEntity) {
         // Amount & Date
         Column(horizontalAlignment = Alignment.End) {
             Text(
-                text = "₹${String.format("%.2f", expense.amount)}",
+                text = "${expense.currency} ${String.format("%.2f", expense.amount)}",
                 fontWeight = FontWeight.Bold,
                 color = Color.Black
             )

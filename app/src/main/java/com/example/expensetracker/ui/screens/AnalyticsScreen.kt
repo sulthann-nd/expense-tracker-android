@@ -48,9 +48,9 @@ fun AnalyticsScreen(viewModel: AnalyticsViewModel) {
     val transactions by viewModel.filteredTransactions.collectAsState()
     val selectedDate by viewModel.selectedMonthDate.collectAsState()
     val slices by viewModel.slices.collectAsState()
+    val totalAmount by viewModel.totalAmount.collectAsState()
+    val dailySeries by viewModel.dailySeries.collectAsState()
 
-    val totalAmount = transactions.sumOf { it.amount }
-    val dailySeries = viewModel.getDailySeries(transactions)
     val avgSpend = if (dailySeries.isNotEmpty()) dailySeries.average() else 0.0
     val topCategory = slices.maxByOrNull { it.percent }?.name ?: "—"
     
@@ -125,9 +125,9 @@ fun AnalyticsScreen(viewModel: AnalyticsViewModel) {
         AnalyticsCard {
             SummaryRow("Top Category", topCategory)
             HorizontalDivider(Modifier.padding(vertical = 8.dp), thickness = 0.5.dp)
-            SummaryRow("Average Daily Spend", "₹${String.format(Locale.getDefault(), "%.2f", avgSpend)}")
+            SummaryRow("Average Daily Spend", "INR ${String.format(Locale.getDefault(), "%.2f", avgSpend)}")
             HorizontalDivider(Modifier.padding(vertical = 8.dp), thickness = 0.5.dp)
-            SummaryRow("Total This Month", "₹${String.format(Locale.getDefault(), "%.2f", totalAmount)}", highlight = true)
+            SummaryRow("Total This Month", "INR ${String.format(Locale.getDefault(), "%.2f", totalAmount)}", highlight = true)
         }
     }
 

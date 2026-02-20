@@ -34,10 +34,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.expensetracker.ui.components.AmountField
 import com.example.expensetracker.ui.components.CategoryPicker
+import com.example.expensetracker.ui.components.CurrencyPicker
 import com.example.expensetracker.ui.components.DatePickerRow
 import com.example.expensetracker.ui.components.NoteField
 import com.example.expensetracker.ui.components.PaymentMethodPicker
 import com.example.expensetracker.ui.viewmodel.EditTransactionViewModel
+import com.example.expensetracker.ui.viewmodel.ExchangeRateViewModel
 import java.util.Date
 import java.util.UUID
 
@@ -46,11 +48,14 @@ import java.util.UUID
 fun EditExpenseScreen(
     transactionId: UUID?,
     viewModel: EditTransactionViewModel,
+    exchangeRateViewModel: ExchangeRateViewModel,
     onDismiss: () -> Unit
 ) {
     // State variables mapped from SwiftUI @State
     var amount by remember { mutableStateOf(0.0) }
     var selectedCategory by remember { mutableStateOf("Food") }
+    var selectedCurrency by remember { mutableStateOf("INR") }
+    var originalCurrency by remember { mutableStateOf("INR") }
     var date by remember { mutableStateOf(Date()) }
     var paymentMethod by remember { mutableStateOf<String?>("Cash") }
     var note by remember { mutableStateOf("") }
@@ -58,9 +63,21 @@ fun EditExpenseScreen(
 
     val categories = listOf("Food", "Transport", "Shopping", "Entertainment", "Bills", "Others")
 
-    // Lifecycle: Load data if ID exists
-    LaunchedEffect(transactionId) {
-        transactionId?.let { viewModel.loadTransaction(it) }
+    // Currency conversion logic
+    val latestRates by exchangeRateViewModel.latestRates.collectAsState()
+
+    fun convertCurrency(from: String, to: String, amount: Double): Double {
+        if (from == to) return amount
+
+        val rates = latestRates?.getOrNull()?.rates ?: return amount
+
+        // Convert to EUR first (base currency), then to target currency
+        val fromRate = rates[from] ?: return amount
+        val toRate = rates[to] ?: return amount
+
+        // Convert: amount in 'from' currency -> EUR -> 'to' currency
+        val amountInEur = amount / fromRate
+        return amountInEur * toRate
     }
 
     // Observe data from ViewModel and update local UI state
@@ -69,9 +86,25 @@ fun EditExpenseScreen(
         existingTransaction?.let {
             amount = it.amount
             selectedCategory = it.category
+            selectedCurrency = it.currency
+            originalCurrency = it.currency
             date = it.date
             paymentMethod = it.paymentMethod
             note = it.note ?: ""
+        }
+    }
+
+    // Fetch latest exchange rates for currency conversion
+    LaunchedEffect(Unit) {
+        exchangeRateViewModel.fetchLatestRates()
+    }
+
+    // Auto-convert amount when currency changes
+    LaunchedEffect(selectedCurrency) {
+        val transaction = existingTransaction
+        if (selectedCurrency != originalCurrency && transaction != null) {
+            val convertedAmount = convertCurrency(originalCurrency, selectedCurrency, transaction.amount)
+            amount = convertedAmount
         }
     }
 
@@ -107,6 +140,7 @@ fun EditExpenseScreen(
                                 viewModel.saveTransaction(
                                     id = transactionId,
                                     amount = amount,
+                                    currency = selectedCurrency,
                                     category = selectedCategory,
                                     date = date,
                                     paymentMethod = paymentMethod ?: "Cash",
@@ -141,7 +175,19 @@ fun EditExpenseScreen(
                 verticalArrangement = Arrangement.spacedBy(0.dp)
             ) {
                 // Amount Field
-                AmountField(amount = amount, onAmountChange = { amount = it }, maxAmount = 10000.0)
+                AmountField(
+                    amount = amount,
+                    onAmountChange = { amount = it },
+                    currency = selectedCurrency,
+                    maxAmount = 10000.0
+                )
+                CustomDivider()
+
+                // Currency Picker
+                CurrencyPicker(
+                    selectedCurrency = selectedCurrency,
+                    onCurrencySelected = { selectedCurrency = it }
+                )
                 CustomDivider()
 
                 // Category Picker

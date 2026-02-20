@@ -215,7 +215,7 @@ fun ExpenseListScreen(
                                 fontWeight = FontWeight.SemiBold
                             )
                             Text(
-                                text = "₹${String.format("%.2f", total)}",
+                                text = "INR ${String.format("%.2f", total)}",
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF007AFF)

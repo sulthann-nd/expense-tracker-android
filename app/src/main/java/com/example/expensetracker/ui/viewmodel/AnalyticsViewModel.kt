@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.expensetracker.data.local.entity.TransactionEntity
 import com.example.expensetracker.data.local.repository.TransactionRepository
+import com.example.expensetracker.utils.CurrencyConverter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +23,15 @@ data class CategorySlice(
     val color: Color
 )
 
-class AnalyticsViewModel(private val repository: TransactionRepository) : ViewModel() {
+class AnalyticsViewModel(
+    private val repository: TransactionRepository,
+    private val exchangeRateViewModel: ExchangeRateViewModel
+) : ViewModel() {
+
+    init {
+        // Fetch latest exchange rates for currency conversion
+        exchangeRateViewModel.fetchLatestRates()
+    }
 
     private val _selectedMonthDate = MutableStateFlow(Date())
     val selectedMonthDate: StateFlow<Date> = _selectedMonthDate
@@ -46,14 +55,18 @@ class AnalyticsViewModel(private val repository: TransactionRepository) : ViewMo
     }
 
     val slices: StateFlow<List<CategorySlice>> by lazy {
-        filteredTransactions.map { transactions ->
-            val total = transactions.sumOf { it.amount }
+        combine(
+            filteredTransactions,
+            exchangeRateViewModel.latestRates
+        ) { transactions, ratesResult ->
+            val rates = ratesResult?.getOrNull()
+            val total = transactions.sumOf { CurrencyConverter.convertToINR(it.currency, it.amount, rates) }
             if (total <= 0) {
                 listOf(CategorySlice(name = "No Data", percent = 1f, color = Color.Gray))
             } else {
                 val grouped = transactions.groupBy { it.category }
                 grouped.map { (category, list) ->
-                    val catTotal = list.sumOf { it.amount }
+                    val catTotal = list.sumOf { CurrencyConverter.convertToINR(it.currency, it.amount, rates) }
                     CategorySlice(
                         name = category,
                         percent = (catTotal / total).toFloat(),
@@ -61,6 +74,26 @@ class AnalyticsViewModel(private val repository: TransactionRepository) : ViewMo
                     )
                 }.sortedByDescending { it.percent }
             }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }
+
+    val totalAmount: StateFlow<Double> by lazy {
+        combine(
+            filteredTransactions,
+            exchangeRateViewModel.latestRates
+        ) { transactions, ratesResult ->
+            val rates = ratesResult?.getOrNull()
+            transactions.sumOf { CurrencyConverter.convertToINR(it.currency, it.amount, rates) }
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
+    }
+
+    val dailySeries: StateFlow<List<Double>> by lazy {
+        combine(
+            filteredTransactions,
+            exchangeRateViewModel.latestRates
+        ) { transactions, ratesResult ->
+            val rates = ratesResult?.getOrNull()
+            getDailySeriesWithConversion(transactions, rates)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     }
 
@@ -74,6 +107,10 @@ class AnalyticsViewModel(private val repository: TransactionRepository) : ViewMo
 
     // Daily Series logic (last 7 days of selected month)
     fun getDailySeries(transactions: List<TransactionEntity>, days: Int = 7): List<Double> {
+        return getDailySeriesWithConversion(transactions, null)
+    }
+
+    private fun getDailySeriesWithConversion(transactions: List<TransactionEntity>, rates: com.example.expensetracker.data.model.ExchangeRateResponse?, days: Int = 7): List<Double> {
         val calendar = Calendar.getInstance()
         val series = mutableListOf<Double>()
 
@@ -98,7 +135,7 @@ class AnalyticsViewModel(private val repository: TransactionRepository) : ViewMo
                 val tCal = Calendar.getInstance().apply { time = it.date }
                 tCal.get(Calendar.YEAR) == day.get(Calendar.YEAR) &&
                         tCal.get(Calendar.DAY_OF_YEAR) == day.get(Calendar.DAY_OF_YEAR)
-            }.sumOf { it.amount }
+            }.sumOf { CurrencyConverter.convertToINR(it.currency, it.amount, rates) }
 
             series.add(daySum)
         }

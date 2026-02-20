@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.expensetracker.ui.components.AmountField
 import com.example.expensetracker.ui.components.CategoryPicker
+import com.example.expensetracker.ui.components.CurrencyPicker
 import com.example.expensetracker.ui.components.DatePickerRow
 import com.example.expensetracker.ui.components.NoteField
 import com.example.expensetracker.ui.components.PaymentMethodPicker
@@ -35,6 +36,7 @@ import java.util.Date
 // Constants to avoid "Magic Strings"
 private const val DEFAULT_CATEGORY = "Food"
 private const val DEFAULT_PAYMENT = "Cash"
+private const val DEFAULT_CURRENCY = "INR"
 private const val NOTE_PLACEHOLDER = "" // Better to use empty than "Optional"
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,6 +50,7 @@ fun AddExpenseScreen(
     var amount by remember { mutableStateOf(0.0) }
     val maxAmount = 1e9
     var selectedCategory by remember { mutableStateOf(DEFAULT_CATEGORY) }
+    var selectedCurrency by remember { mutableStateOf(DEFAULT_CURRENCY) }
     var paymentMethod by remember { mutableStateOf(DEFAULT_PAYMENT) }
     var date by remember { mutableStateOf(Date()) }
     var note by remember { mutableStateOf(NOTE_PLACEHOLDER) }
@@ -59,6 +62,7 @@ fun AddExpenseScreen(
     fun resetFormAfterSave() {
         amount = 0.0
         selectedCategory = DEFAULT_CATEGORY
+        selectedCurrency = DEFAULT_CURRENCY
         date = Date()
         paymentMethod = DEFAULT_PAYMENT
         note = NOTE_PLACEHOLDER
@@ -75,6 +79,7 @@ fun AddExpenseScreen(
         try {
             viewModel.addTransaction(
                 amount = amount,
+                currency = selectedCurrency,
                 category = selectedCategory,
                 note = note.ifBlank { null },
                 date = date,
@@ -129,7 +134,13 @@ fun AddExpenseScreen(
             AmountField(
                 amount = amount,
                 onAmountChange = { amount = it },
+                currency = selectedCurrency,
                 maxAmount = maxAmount
+            )
+
+            CurrencyPicker(
+                selectedCurrency = selectedCurrency,
+                onCurrencySelected = { selectedCurrency = it }
             )
 
             CategoryPicker(

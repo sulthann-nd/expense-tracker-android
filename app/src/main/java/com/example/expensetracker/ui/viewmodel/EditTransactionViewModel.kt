@@ -26,6 +26,7 @@ class EditTransactionViewModel(private val repository: TransactionRepository) : 
     fun saveTransaction(
         id: UUID?,
         amount: Double,
+        currency: String = "INR",
         category: String,
         date: Date,
         paymentMethod: String,
@@ -36,6 +37,7 @@ class EditTransactionViewModel(private val repository: TransactionRepository) : 
             val entity = TransactionEntity(
                 id = id ?: UUID.randomUUID(),
                 amount = amount,
+                currency = currency,
                 category = category,
                 date = date,
                 paymentMethod = paymentMethod,

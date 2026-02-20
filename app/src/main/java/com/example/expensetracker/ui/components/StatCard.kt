@@ -22,6 +22,7 @@ import java.util.Locale
 fun StatCard(
     title: String,
     amount: Double,
+    currency: String = "INR",
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -43,7 +44,7 @@ fun StatCard(
                 color = Color.Gray
             )
             Text(
-                text = "₹${String.format(Locale.getDefault(), "%.2f", amount)}",
+                text = "${currency} ${String.format(Locale.getDefault(), "%.2f", amount)}",
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 color = Color.Black

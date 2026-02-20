@@ -4,14 +4,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.expensetracker.data.local.entity.TransactionEntity
 import com.example.expensetracker.data.local.repository.TransactionRepository
+import com.example.expensetracker.utils.CurrencyConverter
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.util.Calendar
 import java.util.Date
 
-class DashboardViewModel(private val repository: TransactionRepository) : ViewModel() {
+class DashboardViewModel(
+    private val repository: TransactionRepository,
+    private val exchangeRateViewModel: ExchangeRateViewModel
+) : ViewModel() {
+
+    init {
+        // Fetch latest exchange rates for currency conversion
+        exchangeRateViewModel.fetchLatestRates()
+    }
 
     // All expenses from Room database
     val allExpenses: StateFlow<List<TransactionEntity>> by lazy {
@@ -20,13 +30,22 @@ class DashboardViewModel(private val repository: TransactionRepository) : ViewMo
     }
 
     // Filtered: Today's Spending
-    val todaysSpending: StateFlow<Double> = allExpenses.map { list ->
+    val todaysSpending: StateFlow<Double> = combine(
+        allExpenses,
+        exchangeRateViewModel.latestRates
+    ) { list, ratesResult ->
+        val rates = ratesResult?.getOrNull()
         val calendar = Calendar.getInstance()
-        list.filter { isSameDay(it.date, calendar.time) }.sumOf { it.amount }
+        list.filter { isSameDay(it.date, calendar.time) }
+            .sumOf { CurrencyConverter.convertToINR(it.currency, it.amount, rates) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
     // Filtered: This Month's Spending
-    val thisMonthSpending: StateFlow<Double> = allExpenses.map { list ->
+    val thisMonthSpending: StateFlow<Double> = combine(
+        allExpenses,
+        exchangeRateViewModel.latestRates
+    ) { list, ratesResult ->
+        val rates = ratesResult?.getOrNull()
         val calendar = Calendar.getInstance()
         val currentMonth = calendar.get(Calendar.MONTH)
         val currentYear = calendar.get(Calendar.YEAR)
@@ -34,7 +53,7 @@ class DashboardViewModel(private val repository: TransactionRepository) : ViewMo
         list.filter {
             val d = Calendar.getInstance().apply { time = it.date }
             d.get(Calendar.MONTH) == currentMonth && d.get(Calendar.YEAR) == currentYear
-        }.sumOf { it.amount }
+        }.sumOf { CurrencyConverter.convertToINR(it.currency, it.amount, rates) }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
     // Helper for date comparison
