@@ -123,8 +123,8 @@ fun DashboardScreen(
                         Text("No expenses recorded yet.", color = Color.Gray)
                     }
                 } else {
-                    // Show last 10 items
-                    expenses.take(10).forEach { expense ->
+                    // Show last 3 items
+                    expenses.take(3).forEach { expense ->
                         ExpenseListItem(expense)
                     }
                 }

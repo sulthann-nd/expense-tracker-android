@@ -11,16 +11,16 @@ interface ExchangeRateApi {
 
     @GET("latest")
     suspend fun getLatestRates(
-        @Query("access_key") accessKey: String = "7701f38b4ec45c08154e713cf66e45e2",
+        @Query("access_key") accessKey: String = "3fbf307274f9f4213b74ae94a1d6ddee",
         @Query("base") base: String = "EUR"
     ): Response<ExchangeRateResponse>
 
     @GET("symbols")
-    suspend fun getSymbols(@Query("access_key") accessKey: String = "7701f38b4ec45c08154e713cf66e45e2"): Response<SymbolsResponse>
+    suspend fun getSymbols(@Query("access_key") accessKey: String = "3fbf307274f9f4213b74ae94a1d6ddee"): Response<SymbolsResponse>
 
     @GET("{date}")
     suspend fun getHistoricalRates(
         @Path("date") date: String,
-        @Query("access_key") accessKey: String = "7701f38b4ec45c08154e713cf66e45e2"
+        @Query("access_key") accessKey: String = "3fbf307274f9f4213b74ae94a1d6ddee"
     ): Response<ExchangeRateResponse>
 }
